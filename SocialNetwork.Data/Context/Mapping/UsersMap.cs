@@ -11,7 +11,11 @@ namespace SocialNetwork.Data.Context.Mapping
             builder
                 .HasKey(u => u.Id);
             builder
-                .Property(u => u.Name)
+                .Property(u => u.FirstName)
+                .IsRequired();
+            builder
+                .Property(u => u.Password)
+                .HasMaxLength(32)
                 .IsRequired();
             builder
                 .Property(u => u.Email)
