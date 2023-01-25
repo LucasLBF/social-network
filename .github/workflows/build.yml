@@ -49,9 +49,5 @@ jobs:
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"LucasLBF_social-network" /o:"lucaslbf" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io /d:sonar.cs.opencover.reportsPaths=coverage.xml"
           dotnet clean
           dotnet build .\SocialNetwork
-          coverlet .\SocialNetwork.Test\bin\Debug\net6.0\SocialNetwork.Test.dll
-            --target "dotnet" 
-            --targetargs "test --no-build"
-            -f=opencover 
-            -o="coverage.xml"
+          coverlet .\SocialNetwork.Test\bin\Debug\net6.0\SocialNetwork.Test.dll --target "dotnet" --targetargs "test --no-build" -f=opencover -o="coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
