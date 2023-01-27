@@ -12,12 +12,17 @@ namespace SocialNetwork.Data.Context.Mapping
             builder
                 .HasOne(p => p.User)
                 .WithMany(u => u.Posts)
-                .HasForeignKey(p => p.UserId);
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder
                 .HasOne(p => p.Media)
                 .WithOne()
                 .HasForeignKey<Post>(p => p.MediaId)
                 .OnDelete(DeleteBehavior.SetNull);
+            builder
+                .HasMany(p => p.Topics)
+                .WithMany(t => t.Posts)
+                .UsingEntity<PostTopic>();
         }
     }
 }

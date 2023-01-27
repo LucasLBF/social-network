@@ -12,12 +12,12 @@ namespace SocialNetwork.Data.Context.Mapping
                 .HasKey(uc => new { uc.UserId, uc.CommunityId });
             builder
                 .HasOne(uc => uc.User)
-                .WithMany(u => u.Communities)
+                .WithMany()
                 .HasForeignKey(uc => uc.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             builder
                 .HasOne(uc => uc.Community)
-                .WithMany(c => c.Users)
+                .WithMany()
                 .HasForeignKey(uc => uc.CommunityId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

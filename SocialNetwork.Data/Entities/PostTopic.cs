@@ -2,9 +2,9 @@
 {
     public class PostTopic
     {
-        public Guid PostId { get; set; }
-        public Post? Post { get; set; }
-        public Guid TopicId { get; set; }
-        public Topic? Topic { get; set; }
+        public int PostId { get; set; }
+        public virtual Post Post { get; set; } = null!;
+        public int TopicId { get; set; }
+        public virtual Topic Topic { get; set; } = null!;
     }
 }

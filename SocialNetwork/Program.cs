@@ -16,7 +16,9 @@ builder.Services.AddDbContext<SocialNetworkContext>(opt =>
     if (connectionString == null)
         throw new ArgumentNullException(nameof(connectionString), "No connection string was found");
 
-    opt.UseSqlServer(connectionString);
+    opt
+    .UseLazyLoadingProxies()
+    .UseSqlServer(connectionString);
 });
 
 var app = builder.Build();

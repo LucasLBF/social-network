@@ -2,8 +2,13 @@
 {
     public class Topic
     {
-        public Guid Id { get; set; }
-        public string? Name { get; set; }
-        public ICollection<PostTopic>? Posts { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public virtual ICollection<Post> Posts { get; set; } = null!;
+
+        public Topic(string name)
+        {
+            Name = name;
+        }
     }
 }

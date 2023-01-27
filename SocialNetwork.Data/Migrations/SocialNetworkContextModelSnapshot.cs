@@ -17,16 +17,18 @@ namespace SocialNetwork.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Comment", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -36,11 +38,11 @@ namespace SocialNetwork.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid?>("MediaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("MediaId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -50,8 +52,8 @@ namespace SocialNetwork.Data.Migrations
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -68,15 +70,17 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Community", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("CreatorId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CreatorId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -98,15 +102,17 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.EnterpriseUser", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Category")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -118,29 +124,31 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Follow", b =>
                 {
-                    b.Property<Guid>("FollowerId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("FollowedId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("FollowedId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("FollowerId")
+                        .HasColumnType("int");
 
-                    b.HasKey("FollowerId", "FollowedId");
+                    b.HasKey("FollowedId", "FollowerId");
 
-                    b.HasIndex("FollowedId");
+                    b.HasIndex("FollowerId");
 
-                    b.ToTable("Follows");
+                    b.ToTable("Follows", (string)null);
                 });
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Media", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("MediaType")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("UploadedAt")
+                    b.Property<DateTime>("UploadedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Url")
@@ -154,9 +162,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.PersonalUser", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("Age")
                         .HasColumnType("int");
@@ -169,8 +179,8 @@ namespace SocialNetwork.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Visibility")
                         .ValueGeneratedOnAdd()
@@ -187,9 +197,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Post", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -199,8 +211,8 @@ namespace SocialNetwork.Data.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(0);
 
-                    b.Property<Guid?>("MediaId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int?>("MediaId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -210,8 +222,8 @@ namespace SocialNetwork.Data.Migrations
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -226,11 +238,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.PostTopic", b =>
                 {
-                    b.Property<Guid>("PostId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("TopicId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
 
                     b.HasKey("PostId", "TopicId");
 
@@ -241,9 +253,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Profile", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -263,8 +277,8 @@ namespace SocialNetwork.Data.Migrations
                     b.Property<DateTime>("UpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -276,9 +290,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.Topic", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -291,9 +307,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.User", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -325,11 +343,11 @@ namespace SocialNetwork.Data.Migrations
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.UserCommunity", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CommunityId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CommunityId")
+                        .HasColumnType("int");
 
                     b.HasKey("UserId", "CommunityId");
 
@@ -389,15 +407,15 @@ namespace SocialNetwork.Data.Migrations
             modelBuilder.Entity("SocialNetwork.Data.Entities.Follow", b =>
                 {
                     b.HasOne("SocialNetwork.Data.Entities.User", "Followed")
-                        .WithMany("FollowedBy")
+                        .WithMany()
                         .HasForeignKey("FollowedId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
                     b.HasOne("SocialNetwork.Data.Entities.User", "Follower")
-                        .WithMany("Follows")
+                        .WithMany()
                         .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Followed");
@@ -437,13 +455,13 @@ namespace SocialNetwork.Data.Migrations
             modelBuilder.Entity("SocialNetwork.Data.Entities.PostTopic", b =>
                 {
                     b.HasOne("SocialNetwork.Data.Entities.Post", "Post")
-                        .WithMany("Topics")
+                        .WithMany()
                         .HasForeignKey("PostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialNetwork.Data.Entities.Topic", "Topic")
-                        .WithMany("Posts")
+                        .WithMany()
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -467,13 +485,13 @@ namespace SocialNetwork.Data.Migrations
             modelBuilder.Entity("SocialNetwork.Data.Entities.UserCommunity", b =>
                 {
                     b.HasOne("SocialNetwork.Data.Entities.Community", "Community")
-                        .WithMany("Users")
+                        .WithMany()
                         .HasForeignKey("CommunityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SocialNetwork.Data.Entities.User", "User")
-                        .WithMany("Communities")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -483,38 +501,21 @@ namespace SocialNetwork.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Data.Entities.Community", b =>
-                {
-                    b.Navigation("Users");
-                });
-
             modelBuilder.Entity("SocialNetwork.Data.Entities.Post", b =>
                 {
                     b.Navigation("Comments");
-
-                    b.Navigation("Topics");
-                });
-
-            modelBuilder.Entity("SocialNetwork.Data.Entities.Topic", b =>
-                {
-                    b.Navigation("Posts");
                 });
 
             modelBuilder.Entity("SocialNetwork.Data.Entities.User", b =>
                 {
                     b.Navigation("Comments");
 
-                    b.Navigation("Communities");
-
                     b.Navigation("CreatedCommunities");
-
-                    b.Navigation("FollowedBy");
-
-                    b.Navigation("Follows");
 
                     b.Navigation("Posts");
 
-                    b.Navigation("Profile");
+                    b.Navigation("Profile")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

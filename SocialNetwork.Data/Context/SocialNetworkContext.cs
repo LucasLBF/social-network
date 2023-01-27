@@ -7,8 +7,8 @@ namespace SocialNetwork.Data.Context
     public class SocialNetworkContext : DbContext
     {
         public SocialNetworkContext(DbContextOptions<SocialNetworkContext> options)
-            : base(options) 
-        { 
+            : base(options)
+        {
         }
 
 
@@ -18,7 +18,6 @@ namespace SocialNetwork.Data.Context
             modelBuilder.ApplyConfiguration(new EnterpriseUsersMap());
             modelBuilder.ApplyConfiguration(new PersonalUsersMap());
             modelBuilder.ApplyConfiguration(new ProfilesMap());
-            modelBuilder.ApplyConfiguration(new FollowsMap());
             modelBuilder.ApplyConfiguration(new CommunitiesMap());
             modelBuilder.ApplyConfiguration(new UserCommunitiesMap());
             modelBuilder.ApplyConfiguration(new PostsMap());
@@ -28,17 +27,16 @@ namespace SocialNetwork.Data.Context
             modelBuilder.ApplyConfiguration(new PostTopicsMap());
         }
 
-        public DbSet<User>? Users { get; set; }
-        public DbSet<EnterpriseUser>? EnterpriseUsers { get; set; }
-        public DbSet<PersonalUser>? PersonalUsers { get; set; }
-        public DbSet<Profile>? Profiles { get; set; }
-        public DbSet<Follow>? Follows { get; set; }
-        public DbSet<Community>? Communities { get; set; }
-        public DbSet<UserCommunity>? UserCommunities { get; set; }
-        public DbSet<Post>? Posts { get; set; }
-        public DbSet<Comment>? Comments { get; set; }
-        public DbSet<Media>? Media { get; set; }
-        public DbSet<Topic>? Topics { get; set; }
-        public DbSet<PostTopic>? PostTopics { get; set; }
+        public DbSet<User> Users => Set<User>();
+        public DbSet<EnterpriseUser> EnterpriseUsers => Set<EnterpriseUser>();
+        public DbSet<PersonalUser> PersonalUsers => Set<PersonalUser>();
+        public DbSet<Profile> Profiles => Set<Profile>();
+        public DbSet<Community> Communities => Set<Community>();
+        public DbSet<UserCommunity> UserCommunities => Set<UserCommunity>();
+        public DbSet<Post> Posts => Set<Post>();
+        public DbSet<Comment> Comments => Set<Comment>();
+        public DbSet<Media> Media => Set<Media>();
+        public DbSet<Topic> Topics => Set<Topic>();
+        public DbSet<PostTopic> PostTopics => Set<PostTopic>();
     }
 }
