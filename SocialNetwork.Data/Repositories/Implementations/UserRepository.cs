@@ -7,17 +7,13 @@ namespace SocialNetwork.Data.Repositories.Implementations
 {
     public class UserRepository : BaseRepository<User>, IUserRepository
     {
-        private readonly SocialNetworkContext _context;
         public UserRepository(SocialNetworkContext context)
-            : base(context)
-        {
-            _context = context;
-        }
+            : base(context) { }
 
-        public async Task<IEnumerable<User>?> GetUsersByNameAsync(string userName)
+        public async Task<IEnumerable<User>> GetUsersByNameAsync(string userName)
         {
             IEnumerable<User> users =
-                await GenerateQuery(filter: u => u.FirstName.Contains(userName) || u.LastName.Contains(userName))
+                users = await GenerateQuery(filter: u => u.FirstName.Contains(userName) || u.LastName.Contains(userName))
                 .ToListAsync();
 
             return users;
@@ -33,11 +29,24 @@ namespace SocialNetwork.Data.Repositories.Implementations
             if (userWithFollowers != null)
             {
                 followers = userWithFollowers.Followers;
-
             }
 
             return followers;
-
         }
-}
+        public async Task<IEnumerable<User>> GetFollowing(int userId)
+        {
+            User? userWithFollowers = await GenerateQuery(includeProperties: "Following")
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            IEnumerable<User> followers = new List<User>();
+
+            if (userWithFollowers != null)
+            {
+                followers = userWithFollowers.Following;
+            }
+
+            return followers;
+        }
+
+    }
 }

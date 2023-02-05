@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.API", "Social
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.Data", "SocialNetwork.Data\SocialNetwork.Data.csproj", "{35137786-505C-4AEF-BD06-AC4FB165EBDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Test", "SocialNetwork.Test\SocialNetwork.Test.csproj", "{7A8A89C7-E881-49ED-81BA-E2C2CE663D98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.Test", "SocialNetwork.Test\SocialNetwork.Test.csproj", "{7A8A89C7-E881-49ED-81BA-E2C2CE663D98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
