@@ -2,7 +2,10 @@
 {
     public class Post : Message
     {
-        public ICollection<Comment>? Comments { get; set; }
-        public ICollection<PostTopic>? Topics { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = null!;
+        public virtual ICollection<Topic> Topics { get; set; } = null!;
+
+        public Post(string text)
+            : base(text) { }
     }
 }

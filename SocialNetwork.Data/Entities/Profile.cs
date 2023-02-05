@@ -2,9 +2,14 @@
 {
     public class Profile : BaseEntity
     {
-        public string? Description { get; set; }
+        public string Description { get; set; }
         public int Likes { get; set; }
-        public Guid UserId { get; set; }
-        public User? User { get; set; }
+        public int UserId { get; set; }
+        public virtual User User { get; set; } = null!;
+
+        public Profile(string description)
+        {
+            Description = description;
+        }
     }
 }

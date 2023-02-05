@@ -24,6 +24,24 @@ namespace SocialNetwork.Data.Context.Mapping
                 .HasOne(u => u.Profile)
                 .WithOne(p => p.User)
                 .HasForeignKey<Profile>(p => p.UserId);
+            builder
+                .HasMany(u => u.Followers)
+                .WithMany(u => u.Following)
+                .UsingEntity<Follow>(
+                configureRight: right => right
+                .HasOne(j => j.Follower)
+                .WithMany()
+                .HasForeignKey(j => j.FollowerId),
+                configureLeft: left => left
+                .HasOne(j => j.Followed)
+                .WithMany()
+                .HasForeignKey(j => j.FollowedId),
+                j => j.ToTable("Follows"));
+
+            builder
+                .HasMany(u => u.Communities)
+                .WithMany(c => c.Users)
+                .UsingEntity<UserCommunity>();
         }
     }
 }

@@ -12,12 +12,14 @@ namespace SocialNetwork.Data.Context.Mapping
                 .HasKey(pt => new { pt.PostId, pt.TopicId });
             builder
                 .HasOne(pt => pt.Post)
-                .WithMany(p => p.Topics)
-                .HasForeignKey(pt => pt.PostId);
+                .WithMany()
+                .HasForeignKey(pt => pt.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
             builder
                 .HasOne(pt => pt.Topic)
-                .WithMany(p => p.Posts)
-                .HasForeignKey(pt => pt.TopicId);
+                .WithMany()
+                .HasForeignKey(pt => pt.TopicId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
