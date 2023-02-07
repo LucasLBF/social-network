@@ -14,11 +14,8 @@ namespace SocialNetwork.Data.Repositories.Implementations
         public async Task<IEnumerable<User>> GetUsersByNameAsync(string userName)
         {
             Expression<Func<User, bool>> filter = u => u.FirstName.Contains(userName) || u.LastName.Contains(userName);
-            IEnumerable<User> users =
-                users = await GenerateQuery(filter: filter)
+                return await GenerateQuery(filter: filter)
                 .ToListAsync();
-
-            return users;
         }
 
         public async Task<IEnumerable<User>> GetFollowers(int userId)
