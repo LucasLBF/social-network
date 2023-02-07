@@ -2,6 +2,7 @@
 using SocialNetwork.Data.Context;
 using SocialNetwork.Data.Entities;
 using SocialNetwork.Data.Repositories.Abstractions;
+using System.Linq.Expressions;
 
 namespace SocialNetwork.Data.Repositories.Implementations
 {
@@ -12,11 +13,9 @@ namespace SocialNetwork.Data.Repositories.Implementations
 
         public async Task<IEnumerable<User>> GetUsersByNameAsync(string userName)
         {
-            IEnumerable<User> users =
-                users = await GenerateQuery(filter: u => u.FirstName.Contains(userName) || u.LastName.Contains(userName))
+            Expression<Func<User, bool>> filter = u => u.FirstName.Contains(userName) || u.LastName.Contains(userName);
+                return await GenerateQuery(filter: filter)
                 .ToListAsync();
-
-            return users;
         }
 
         public async Task<IEnumerable<User>> GetFollowers(int userId)

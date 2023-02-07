@@ -7,5 +7,7 @@ namespace SocialNetwork.API.Services.Abstractions
         Task<User?> GetUser(int userId);
         Task<IEnumerable<User>> GetFollowers(int userId);
         Task<IEnumerable<User>> GetFollowing(int userId);
+        Task<IEnumerable<User>> GetUsersByName(string? name);
+        Task<bool> CheckIfExists(int id);
     }
 }
