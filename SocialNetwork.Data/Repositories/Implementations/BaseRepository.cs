@@ -14,6 +14,11 @@ namespace SocialNetwork.Data.Repositories.Implementations
             _context = context;
         }
 
+        public async virtual Task<bool> CheckIfExists(int id)
+        {
+            return await _context.Set<TEntity>().FindAsync(id) != null;
+        }
+
         public async virtual Task<TEntity> AddAsync(TEntity entity)
         {
             EntityEntry result = await _context.AddAsync(entity);
