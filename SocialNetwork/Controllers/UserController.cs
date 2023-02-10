@@ -8,7 +8,7 @@ namespace SocialNetwork.API.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UserController : BaseAPIController
+    public class UserController : BaseApiController
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
