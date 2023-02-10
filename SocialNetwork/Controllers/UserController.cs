@@ -8,7 +8,7 @@ namespace SocialNetwork.API.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : BaseAPIController
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
@@ -26,7 +26,8 @@ namespace SocialNetwork.API.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                ValidationModel.AddValidation("", $"User with Id {userId} was not found");
+                return NotFound(ValidationModel);
             }
 
             UserModel model = _mapper.Map<UserModel>(user);
@@ -39,7 +40,8 @@ namespace SocialNetwork.API.Controllers
         {
             if (!(await _userService.CheckIfExists(userId)))
             {
-                return BadRequest($"User with id {userId} not found");
+                ValidationModel.AddValidation("", $"User with Id {userId} was not found");
+                return BadRequest(ValidationModel);
             }
 
             IEnumerable<User> followers = await _userService.GetFollowers(userId);
@@ -54,7 +56,8 @@ namespace SocialNetwork.API.Controllers
         {
             if (!(await _userService.CheckIfExists(userId)))
             {
-                return BadRequest($"User with id {userId} not found");
+                ValidationModel.AddValidation("", $"User with Id {userId} was not found");
+                return BadRequest(ValidationModel);
             }
 
             IEnumerable<User> following = await _userService.GetFollowing(userId);
