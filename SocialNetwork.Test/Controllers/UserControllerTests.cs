@@ -59,6 +59,18 @@ namespace SocialNetwork.Test.Controllers
 
             // Assert
             Assert.Equal(HttpStatusCode.NotFound, result.StatusCode);
+            
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel =
+                JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+
+            Assert.NotNull(validationModel);
+
+            List<string> validationMessages = new List<string>
+            {
+                $"User with Id {nonExistentUserId} was not found"
+            };
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
         }
 
         [Fact]
@@ -113,7 +125,18 @@ namespace SocialNetwork.Test.Controllers
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
             string response = await result.Content.ReadAsStringAsync();
-            Assert.Equal($"User with id {nonExistentUserId} not found", response);
+
+            ValidationResponseModel? validationModel =
+                JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+
+            Assert.NotNull(validationModel);
+
+            List<string> validationMessages = new List<string>
+            {
+                $"User with Id {nonExistentUserId} was not found"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
         }
 
         [Fact]
@@ -168,7 +191,18 @@ namespace SocialNetwork.Test.Controllers
             // Assert
             Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
             string response = await result.Content.ReadAsStringAsync();
-            Assert.Equal($"User with id {nonExistentUserId} not found", response);
+
+            ValidationResponseModel? validationModel =
+                JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+
+            Assert.NotNull(validationModel);
+
+            List<string> validationMessages = new List<string>
+            {
+                $"User with Id {nonExistentUserId} was not found"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
         }
 
         [Fact]
@@ -208,6 +242,7 @@ namespace SocialNetwork.Test.Controllers
             Assert.True(isValidModel);
         }
 
+        #region Private Methods
         private bool ValidateUserModelList(IEnumerable<User> users, IEnumerable<UserModel> modelList)
         {
             bool isValidModelList = true;
@@ -222,5 +257,21 @@ namespace SocialNetwork.Test.Controllers
             return isValidModelList;
         }
 
+        private bool CheckValidationMessages(IEnumerable<string> validationMessages, ValidationResponseModel validationModel)
+        {
+            bool isValidModel = true;
+
+            foreach (var message in validationMessages)
+            {
+                isValidModel = validationModel.Validations
+                    .Any(v => v.Messages.Any(m => m.Equals(message)));
+
+                if (!isValidModel)
+                    break;
+            }
+
+            return isValidModel;
+        }
+        #endregion
     }
 }
