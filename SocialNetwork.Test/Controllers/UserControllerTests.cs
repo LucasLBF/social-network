@@ -1,23 +1,27 @@
 ﻿using Newtonsoft.Json;
 using SocialNetwork.API.Models;
-using SocialNetwork.Data.Context;
 using SocialNetwork.Data.Entities;
-using SocialNetwork.Data.Repositories.Implementations;
+using SocialNetwork.Data.Enums;
+using SocialNetwork.Data.Repositories.Abstractions;
+using SocialNetwork.Data.UnitOfWork.Abstractions;
 using SocialNetwork.Test.Fixtures;
 using System.Net;
+using System.Text;
 
 namespace SocialNetwork.Test.Controllers
 {
     public class UserControllerTests : IClassFixture<SocialNetworkFixture>
     {
 
-        private readonly UserRepository _userRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly HttpClient _client;
 
         public UserControllerTests(SocialNetworkFixture fixture)
         {
             _client = fixture.CreateClient();
-            _userRepository = new UserRepository(fixture.InMemoryDbContext);
+            _unitOfWork = SocialNetworkFixture.GetUnitOfWork(fixture.InMemoryDbContext);
+            _userRepository = _unitOfWork.UserRepository;
         }
 
 
@@ -29,12 +33,11 @@ namespace SocialNetwork.Test.Controllers
             User user = new User(
                 firstName: "Test",
                 lastName: "User",
-                email: "testuser@test.com",
+                email: "testuser1@test.com",
                 password:"test1234");
 
             await _userRepository.AddAsync(user);
-            await _userRepository.SaveChanges();
-
+            await _unitOfWork.SaveChanges();
 
             // Act
             HttpResponseMessage result = await _client.GetAsync($"api/users/{user.Id}");
@@ -81,13 +84,13 @@ namespace SocialNetwork.Test.Controllers
             User user1 = new User(
                 firstName: "Test",
                 lastName: "User",
-                email: "testuser@test.com",
+                email: "testuser2@test.com",
                 password:"test1234");
 
             User user2 = new User(
                 firstName: "Test",
                 lastName: "User Follower",
-                email: "testuserfollower@test.com",
+                email: "testuserfollower1@test.com",
                 password: "test12345")
             {
                 Following = new List<User>
@@ -98,7 +101,7 @@ namespace SocialNetwork.Test.Controllers
 
             await _userRepository.AddAsync(user1);
             await _userRepository.AddAsync(user2);
-            await _userRepository.SaveChanges();
+            await _unitOfWork.SaveChanges();
 
             // Act
             HttpResponseMessage result = await _client.GetAsync($"api/users/followers/{user1.Id}");
@@ -147,13 +150,13 @@ namespace SocialNetwork.Test.Controllers
             User user1 = new User(
                 firstName: "Test",
                 lastName: "User",
-                email: "testuser@test.com",
+                email: "testuser3@test.com",
                 password:"test1234");
 
             User user2 = new User(
                 firstName: "Test",
                 lastName: "User Follower",
-                email: "testuserfollower@test.com",
+                email: "testuserfollower2@test.com",
                 password: "test12345")
             {
                 Followers = new List<User>
@@ -164,7 +167,7 @@ namespace SocialNetwork.Test.Controllers
 
             await _userRepository.AddAsync(user1);
             await _userRepository.AddAsync(user2);
-            await _userRepository.SaveChanges();
+            await _unitOfWork.SaveChanges();
 
             // Act
             HttpResponseMessage result = await _client.GetAsync($"api/users/following/{user1.Id}");
@@ -215,18 +218,18 @@ namespace SocialNetwork.Test.Controllers
             User user1 = new User(
                 firstName: "User",
                 lastName: "SUT",
-                email: "testuser@test.com",
+                email: "testuser4@test.com",
                 password:"test1234");
 
             User user2 = new User(
                 firstName: "SUT",
                 lastName: "User",
-                email: "testuserfollower@test.com",
+                email: "testuserfollower3@test.com",
                 password: "test12345");
 
             await _userRepository.AddAsync(user1);
             await _userRepository.AddAsync(user2);
-            await _userRepository.SaveChanges();
+            await _unitOfWork.SaveChanges();
 
             // Act
             HttpResponseMessage result = await _client.GetAsync($"api/users?name={searchName}");
