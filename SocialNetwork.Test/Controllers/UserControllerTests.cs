@@ -245,6 +245,219 @@ namespace SocialNetwork.Test.Controllers
             Assert.True(isValidModel);
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddPersonalUser_Should_Return_PersonalUserModel()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser5@test.com",
+                password:"test1234");
+
+            PersonalUser personalUser = new PersonalUser
+            {
+                Age = 20,
+                Genre = Genre.Female,
+                Visibility = Visibility.Public,
+                Status = Status.Online,
+                User = user1,
+            };
+
+            PostPersonalUserModel postModel = new PostPersonalUserModel
+            {
+                FirstName = user1.FirstName, 
+                LastName = user1.LastName,
+                Email = user1.Email,
+                Password = user1.Password,
+                Age = personalUser.Age,
+                Genre = personalUser.Genre,
+                Status = personalUser.Status,
+                Profile = new ProfileModel
+                {
+                    Description = "",
+                }
+            };
+
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/personalUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            PersonalUserModel? model = JsonConvert.DeserializeObject<PersonalUserModel>(response);
+            Assert.NotNull(model);
+            string fullName = $"{user1.FirstName} {user1.LastName}";
+            Assert.Equal(fullName, model!.FullName);
+            Assert.Equal(postModel.Age, model!.Age);
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddPersonalUser_Should_Return_BadRequest_When_Existing_Email()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser6@test.com",
+                password:"test1234");
+
+            User user2 = new User(
+                firstName: "SUT",
+                lastName: "User",
+                email: user1.Email,
+                password: "test12345");
+
+
+            PersonalUser personalUser = new PersonalUser
+            {
+                Age = 20,
+                Genre = Genre.Female,
+                Visibility = Visibility.Public,
+                Status = Status.Online,
+                User = user1,
+            };
+
+            PostPersonalUserModel postModel = new PostPersonalUserModel
+            {
+                FirstName = user2.FirstName, 
+                LastName = user2.LastName,
+                Email = user2.Email,
+                Password = user2.Password,
+                Age = personalUser.Age,
+                Genre = personalUser.Genre,
+                Status = personalUser.Status,
+                Profile = new ProfileModel
+                {
+                    Description = "",
+                }
+            };
+
+            await _userRepository.AddAsync(user1);
+            await _unitOfWork.SaveChanges();
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/personalUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel = JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+            Assert.NotNull(validationModel);
+            List<string> validationMessages = new List<string>
+            {
+                "Email is already in use"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddEnterpriseUser_Should_Return_EnterpriseUserModel()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser7@test.com",
+                password:"test1234");
+
+            EnterpriseUser enterpriseUser = new EnterpriseUser
+            {
+                Category = EnterpriseCategory.Influencer
+            };
+
+            PostEnterpriseUserModel postModel = new PostEnterpriseUserModel
+            {
+                FirstName = user1.FirstName,
+                LastName = user1.LastName,
+                Email = user1.Email,
+                Password = user1.Password,
+                Category = enterpriseUser.Category,
+                Profile = new ProfileModel
+                {
+                    Description = "Test Description",
+                }   
+            };
+
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/enterpriseUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.Created, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            EnterpriseUserModel? model = JsonConvert.DeserializeObject<EnterpriseUserModel>(response);
+            Assert.NotNull(model);
+            string fullName = $"{user1.FirstName} {user1.LastName}";
+            Assert.Equal(fullName, model!.FullName);
+            Assert.Equal(postModel.Category, model!.Category);
+        }
+
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddEnterpriseUser_Should_Return_BadRequest_When_Existing_Email()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser8@test.com",
+                password:"test1234");
+
+            User user2 = new User(
+                firstName: "SUT",
+                lastName: "User",
+                email: user1.Email,
+                password: "test12345");
+
+
+            EnterpriseUser enterpriseUser = new EnterpriseUser
+            {
+                Category = EnterpriseCategory.Influencer,
+                User = user2
+            };
+
+            PostEnterpriseUserModel postModel = new PostEnterpriseUserModel
+            {
+                FirstName = user2.FirstName, 
+                LastName = user2.LastName,
+                Email = user2.Email,
+                Password = user2.Password,
+                Category = enterpriseUser.Category,
+                Profile = new ProfileModel
+                {
+                    Description = "",
+                }
+            };
+
+            await _userRepository.AddAsync(user1);
+            await _unitOfWork.SaveChanges();
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/enterpriseUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel = JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+            Assert.NotNull(validationModel);
+            List<string> validationMessages = new List<string>
+            {
+                "Email is already in use"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
+        }
+
         #region Private Methods
         private bool ValidateUserModelList(IEnumerable<User> users, IEnumerable<UserModel> modelList)
         {

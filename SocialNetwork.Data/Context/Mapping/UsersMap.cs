@@ -19,7 +19,11 @@ namespace SocialNetwork.Data.Context.Mapping
                 .IsRequired();
             builder
                 .Property(u => u.Email)
+                .HasMaxLength(254)
                 .IsRequired();
+            builder
+                .HasIndex(u => u.Email)
+                .IsUnique();
             builder
                 .HasOne(u => u.Profile)
                 .WithOne(p => p.User)

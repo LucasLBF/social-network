@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Data.SqlClient.Server;
+using SocialNetwork.Data.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace SocialNetwork.Data.Entities
 {
@@ -9,6 +11,7 @@ namespace SocialNetwork.Data.Entities
         public string Email { get; set; }
         [MinLength(8), MaxLength(32)]
         public string Password { get; set; }
+        public UserType Type { get; set; }
         public virtual Profile Profile { get; set; } = null!;
         public virtual ICollection<User> Followers { get; set; } = null!;
         public virtual ICollection<User> Following { get; set; } = null!;

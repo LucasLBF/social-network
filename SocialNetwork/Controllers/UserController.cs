@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.API.Models;
 using SocialNetwork.API.Services.Abstractions;
 using SocialNetwork.Data.Entities;
+using System.Text.RegularExpressions;
 
 namespace SocialNetwork.API.Controllers
 {
@@ -76,5 +77,111 @@ namespace SocialNetwork.API.Controllers
 
             return Ok(usersModels);
         }
+
+        [HttpPost("personalUsers")]
+        public async Task<IActionResult> AddPersonalUser([FromBody] PostPersonalUserModel model)
+        {
+            ValidatePostUserModel(model);
+
+            if (ValidationModel.HasError)
+            {
+                return BadRequest(ValidationModel);
+            }
+
+            User user = _mapper.Map<User>(model);
+            PersonalUser personalUser = _mapper.Map<PersonalUser>(model);
+            personalUser.User = user;
+
+            await _userService.AddUser(user, personalUser);
+
+            PersonalUserModel userModel = _mapper.Map<PersonalUserModel>((user, personalUser));
+
+            return Created($"api/users/{user.Id}", userModel);
+        }
+
+        [HttpPost("enterpriseUsers")]
+        public async Task<IActionResult> AddEntrepriseUser([FromBody] PostEnterpriseUserModel model)
+        {
+            ValidatePostUserModel(model);
+
+            if (ValidationModel.HasError)
+            {
+                return BadRequest(ValidationModel);
+            }   
+
+            User user = _mapper.Map<User>(model);
+            EnterpriseUser enterpriseUser = _mapper.Map<EnterpriseUser>(model);
+            enterpriseUser.User = user;
+
+            await _userService.AddUser(user, enterpriseUser);
+
+            EnterpriseUserModel userModel = _mapper.Map<EnterpriseUserModel>((user, enterpriseUser));
+
+            return Created($"api/users/{user.Id}", userModel);
+        }
+
+        #region Private Methods
+        private void ValidatePostUserModel(PostUserModel model)
+        {
+            ValidateName(model.FirstName, model.LastName);
+            ValidateEmail(model.Email);
+            ValidatePassword(model.Password);
+            ValidateProfile(model.Profile);
+        }
+
+        private void ValidateName(string firstName, string lastName) 
+        { 
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                ValidationModel.AddValidation("FirstName", "First name is required");
+                return;
+            }
+
+            if (!Regex.IsMatch(firstName, @"^[\w]{1,15}$"))
+            {
+                ValidationModel.AddValidation("FirstName", "First name must be between 1 and 15 characters long." +
+                    " Accepted special characters: _");
+            }
+
+            if (!Regex.IsMatch(lastName, @"^[\w]{0,15}$"))
+            {
+                ValidationModel.AddValidation("LastName", "Last name must be at most 15 characters long." +
+                    " Accepted special characters: _");
+            }
+        }
+
+        private async void ValidateEmail(string email) 
+        { 
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ValidationModel.AddValidation("Email", "Email is required");
+                return;
+            }
+
+            if (await _userService.CheckExistingEmail(email))
+            {
+                ValidationModel.AddValidation("Email", "Email is already in use");
+                return;
+            }
+
+            if (!Regex.IsMatch(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
+            {
+                ValidationModel.AddValidation("Email", "Email is not valid");
+            }
+        }
+
+        private void ValidatePassword(string password) 
+        { 
+
+        }
+
+        private void ValidateProfile(ProfileModel profile) 
+        { 
+            if (profile.Description.Length > 140)
+            {
+                ValidationModel.AddValidation("Description", "Description must be at most 140 characters long");
+            }
+        }
+        #endregion
     }
 }

@@ -47,5 +47,9 @@ namespace SocialNetwork.Data.Repositories.Implementations
             return followers;
         }
 
+        public async Task<bool> CheckExistingEmail(string email)
+        {
+            return await _context.Set<User>().AnyAsync(u => u.Email == email);
+        }
     }
 }

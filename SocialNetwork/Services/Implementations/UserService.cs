@@ -60,7 +60,12 @@ namespace SocialNetwork.API.Services.Implementations
 
         public async Task<bool> CheckIfExists(int id)
         {
-            return await _userRepository.CheckIfExists(id);
+            return await _unitOfWork.UserRepository.CheckIfExists(id);
+        }
+
+        public async Task<bool> CheckExistingEmail(string email)
+        {
+            return await _unitOfWork.UserRepository.CheckExistingEmail(email);
         }
     }
 }

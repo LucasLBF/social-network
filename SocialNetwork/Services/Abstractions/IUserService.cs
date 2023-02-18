@@ -11,5 +11,6 @@ namespace SocialNetwork.API.Services.Abstractions
         Task AddUser(User user, PersonalUser personalUser);
         Task AddUser(User user, EnterpriseUser enterpriseUser);
         Task<bool> CheckIfExists(int id);
+        Task<bool> CheckExistingEmail(string email);
     }
 }
