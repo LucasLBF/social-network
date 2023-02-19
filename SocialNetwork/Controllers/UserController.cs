@@ -82,7 +82,7 @@ namespace SocialNetwork.API.Controllers
         [HttpPost("personalUsers")]
         public async Task<IActionResult> AddPersonalUser([FromBody] PostPersonalUserModel model)
         {
-            ValidatePostUserModel(model);
+            await ValidatePostUserModel(model);
 
             if (ValidationModel.HasError)
             {
@@ -103,7 +103,7 @@ namespace SocialNetwork.API.Controllers
         [HttpPost("enterpriseUsers")]
         public async Task<IActionResult> AddEntrepriseUser([FromBody] PostEnterpriseUserModel model)
         {
-            ValidatePostUserModel(model);
+            await ValidatePostUserModel(model);
 
             if (ValidationModel.HasError)
             {
