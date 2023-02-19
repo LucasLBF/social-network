@@ -458,6 +458,152 @@ namespace SocialNetwork.Test.Controllers
             Assert.True(CheckValidationMessages(validationMessages, validationModel!));
         }
 
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddEnterpriseUser_Should_Return_BadRequest_When_Invalid_Name()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "VeryLongFirstNameTest",
+                lastName: "VeryLongLastNameUser",
+                email: "testuser9@test.com",
+                password:"test12345");
+
+            EnterpriseUser enterpriseUser = new EnterpriseUser
+            {
+                Category = EnterpriseCategory.Influencer,
+                User = user1
+            };
+
+            PostEnterpriseUserModel postModel = new PostEnterpriseUserModel
+            {
+                FirstName = user1.FirstName, 
+                LastName = user1.LastName,
+                Email = user1.Email,
+                Password = user1.Password,
+                Category = enterpriseUser.Category,
+                Profile = new ProfileModel
+                {
+                    Description = "",
+                }
+            };
+
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/enterpriseUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel = JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+            Assert.NotNull(validationModel);
+            List<string> validationMessages = new List<string>
+            {
+                "First name must be between 1 and 15 characters long. Accepted special characters: _",
+                "Last name must be at most 15 characters long. Accepted special characters: _"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
+        }
+        
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddEnterpriseUser_Should_Return_BadRequest_When_Invalid_Email()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser10@test",
+                password:"test12345");
+
+            EnterpriseUser enterpriseUser = new EnterpriseUser
+            {
+                Category = EnterpriseCategory.Influencer,
+                User = user1
+            };
+
+            PostEnterpriseUserModel postModel = new PostEnterpriseUserModel
+            {
+                FirstName = user1.FirstName, 
+                LastName = user1.LastName,
+                Email = user1.Email,
+                Password = user1.Password,
+                Category = enterpriseUser.Category,
+                Profile = new ProfileModel
+                {
+                    Description = "Description",
+                }
+            };
+
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/enterpriseUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel = JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+            Assert.NotNull(validationModel);
+            List<string> validationMessages = new List<string>
+            {
+                "Email is not valid"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
+        }
+        
+        [Fact]
+        [Trait("Category", "Unit")]
+        public async Task AddEnterpriseUser_Should_Return_BadRequest_When_Invalid_Description()
+        {
+            // Arrange
+            User user1 = new User(
+                firstName: "Test",
+                lastName: "User",
+                email: "testuser11@test",
+                password:"test12345");
+
+            EnterpriseUser enterpriseUser = new EnterpriseUser
+            {
+                Category = EnterpriseCategory.Influencer,
+                User = user1
+            };
+
+            PostEnterpriseUserModel postModel = new PostEnterpriseUserModel
+            {
+                FirstName = user1.FirstName, 
+                LastName = user1.LastName,
+                Email = user1.Email,
+                Password = user1.Password,
+                Category = enterpriseUser.Category,
+                Profile = new ProfileModel
+                {
+                    Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+                    + " Aliquam et maximus neque. Pellentesque eget tortor vehicula, posuere turpis a donec."
+                }
+            };
+
+            string body = JsonConvert.SerializeObject(postModel);
+
+            // Act
+            HttpResponseMessage result = await _client.PostAsync("/api/users/enterpriseUsers", new StringContent(body, Encoding.UTF8, "application/json"));
+
+            // Assert
+            Assert.Equal(HttpStatusCode.BadRequest, result.StatusCode);
+            string response = await result.Content.ReadAsStringAsync();
+            ValidationResponseModel? validationModel = JsonConvert.DeserializeObject<ValidationResponseModel>(response);
+            Assert.NotNull(validationModel);
+            List<string> validationMessages = new List<string>
+            {
+                "Description must be at most 140 characters long"
+            };
+
+            Assert.True(CheckValidationMessages(validationMessages, validationModel!));
+        }
+
         #region Private Methods
         private bool ValidateUserModelList(IEnumerable<User> users, IEnumerable<UserModel> modelList)
         {

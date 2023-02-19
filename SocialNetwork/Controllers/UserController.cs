@@ -13,6 +13,7 @@ namespace SocialNetwork.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private TimeSpan MATCH_TIMEOUT = TimeSpan.FromMilliseconds(100);
         public UserController(IUserService userService,
             IMapper mapper)
         {
@@ -121,10 +122,10 @@ namespace SocialNetwork.API.Controllers
         }
 
         #region Private Methods
-        private void ValidatePostUserModel(PostUserModel model)
+        private async void ValidatePostUserModel(PostUserModel model)
         {
             ValidateName(model.FirstName, model.LastName);
-            ValidateEmail(model.Email);
+            await ValidateEmail(model.Email);
             ValidatePassword(model.Password);
             ValidateProfile(model.Profile);
         }
@@ -137,20 +138,20 @@ namespace SocialNetwork.API.Controllers
                 return;
             }
 
-            if (!Regex.IsMatch(firstName, @"^[\w]{1,15}$"))
+            if (!Regex.IsMatch(firstName, @"^[\w]{1,15}$", RegexOptions.None, MATCH_TIMEOUT))
             {
                 ValidationModel.AddValidation("FirstName", "First name must be between 1 and 15 characters long." +
                     " Accepted special characters: _");
             }
 
-            if (!Regex.IsMatch(lastName, @"^[\w]{0,15}$"))
+            if (!Regex.IsMatch(lastName, @"^[\w]{0,15}$", RegexOptions.None, MATCH_TIMEOUT))
             {
                 ValidationModel.AddValidation("LastName", "Last name must be at most 15 characters long." +
                     " Accepted special characters: _");
             }
         }
 
-        private async void ValidateEmail(string email) 
+        private async Task ValidateEmail(string email) 
         { 
             if (string.IsNullOrWhiteSpace(email))
             {
@@ -164,7 +165,7 @@ namespace SocialNetwork.API.Controllers
                 return;
             }
 
-            if (!Regex.IsMatch(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$"))
+            if (!Regex.IsMatch(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$", RegexOptions.None ,MATCH_TIMEOUT))
             {
                 ValidationModel.AddValidation("Email", "Email is not valid");
             }
@@ -172,7 +173,7 @@ namespace SocialNetwork.API.Controllers
 
         private void ValidatePassword(string password) 
         { 
-
+            // Will be implemented in the future
         }
 
         private void ValidateProfile(ProfileModel profile) 
