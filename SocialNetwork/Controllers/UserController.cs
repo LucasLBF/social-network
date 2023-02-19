@@ -122,7 +122,7 @@ namespace SocialNetwork.API.Controllers
         }
 
         #region Private Methods
-        private async void ValidatePostUserModel(PostUserModel model)
+        private async Task ValidatePostUserModel(PostUserModel model)
         {
             ValidateName(model.FirstName, model.LastName);
             await ValidateEmail(model.Email);
