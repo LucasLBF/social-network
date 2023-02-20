@@ -5,6 +5,8 @@ using SocialNetwork.API.Services.Implementations;
 using SocialNetwork.Data.Context;
 using SocialNetwork.Data.Repositories.Abstractions;
 using SocialNetwork.Data.Repositories.Implementations;
+using SocialNetwork.Data.UnitOfWork.Abstractions;
+using SocialNetwork.Data.UnitOfWork.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPersonalUserRepository, PersonalUserRepository>();
+builder.Services.AddScoped<IEnterpriseUserRepository, EnterpriseUserRepository>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 // Mapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

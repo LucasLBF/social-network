@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.API.Models;
 using SocialNetwork.API.Services.Abstractions;
 using SocialNetwork.Data.Entities;
+using System.Text.RegularExpressions;
 
 namespace SocialNetwork.API.Controllers
 {
@@ -12,6 +13,7 @@ namespace SocialNetwork.API.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private TimeSpan MATCH_TIMEOUT = TimeSpan.FromMilliseconds(100);
         public UserController(IUserService userService,
             IMapper mapper)
         {
@@ -76,5 +78,111 @@ namespace SocialNetwork.API.Controllers
 
             return Ok(usersModels);
         }
+
+        [HttpPost("personalUsers")]
+        public async Task<IActionResult> AddPersonalUser([FromBody] PostPersonalUserModel model)
+        {
+            await ValidatePostUserModel(model);
+
+            if (ValidationModel.HasError)
+            {
+                return BadRequest(ValidationModel);
+            }
+
+            User user = _mapper.Map<User>(model);
+            PersonalUser personalUser = _mapper.Map<PersonalUser>(model);
+            personalUser.User = user;
+
+            await _userService.AddUser(user, personalUser);
+
+            PersonalUserModel userModel = _mapper.Map<PersonalUserModel>((user, personalUser));
+
+            return Created($"api/users/{user.Id}", userModel);
+        }
+
+        [HttpPost("enterpriseUsers")]
+        public async Task<IActionResult> AddEntrepriseUser([FromBody] PostEnterpriseUserModel model)
+        {
+            await ValidatePostUserModel(model);
+
+            if (ValidationModel.HasError)
+            {
+                return BadRequest(ValidationModel);
+            }   
+
+            User user = _mapper.Map<User>(model);
+            EnterpriseUser enterpriseUser = _mapper.Map<EnterpriseUser>(model);
+            enterpriseUser.User = user;
+
+            await _userService.AddUser(user, enterpriseUser);
+
+            EnterpriseUserModel userModel = _mapper.Map<EnterpriseUserModel>((user, enterpriseUser));
+
+            return Created($"api/users/{user.Id}", userModel);
+        }
+
+        #region Private Methods
+        private async Task ValidatePostUserModel(PostUserModel model)
+        {
+            ValidateName(model.FirstName, model.LastName);
+            await ValidateEmail(model.Email);
+            ValidatePassword(model.Password);
+            ValidateProfile(model.Profile);
+        }
+
+        private void ValidateName(string firstName, string lastName) 
+        { 
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                ValidationModel.AddValidation("FirstName", "First name is required");
+                return;
+            }
+
+            if (!Regex.IsMatch(firstName, @"^[\w]{1,15}$", RegexOptions.None, MATCH_TIMEOUT))
+            {
+                ValidationModel.AddValidation("FirstName", "First name must be between 1 and 15 characters long." +
+                    " Accepted special characters: _");
+            }
+
+            if (!Regex.IsMatch(lastName, @"^[\w]{0,15}$", RegexOptions.None, MATCH_TIMEOUT))
+            {
+                ValidationModel.AddValidation("LastName", "Last name must be at most 15 characters long." +
+                    " Accepted special characters: _");
+            }
+        }
+
+        private async Task ValidateEmail(string email) 
+        { 
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                ValidationModel.AddValidation("Email", "Email is required");
+                return;
+            }
+
+            if (await _userService.CheckExistingEmail(email))
+            {
+                ValidationModel.AddValidation("Email", "Email is already in use");
+                return;
+            }
+
+            if (!Regex.IsMatch(email, @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$", RegexOptions.None ,MATCH_TIMEOUT))
+            {
+                ValidationModel.AddValidation("Email", "Email is not valid");
+            }
+        }
+
+        private void ValidatePassword(string password) 
+        { 
+            // Will be implemented in the future
+        }
+
+        private void ValidateProfile(ProfileModel profile) 
+        { 
+            if (profile.Description.Length > 140)
+            {
+                ValidationModel.AddValidation("Description", "Description must be at most 140 characters long");
+            }
+        }
+        #endregion
     }
 }

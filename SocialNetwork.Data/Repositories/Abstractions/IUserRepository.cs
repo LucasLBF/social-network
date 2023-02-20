@@ -7,5 +7,6 @@ namespace SocialNetwork.Data.Repositories.Abstractions
         Task<IEnumerable<User>> GetUsersByNameAsync(string userName);
         Task<IEnumerable<User>> GetFollowers(int userId);
         Task<IEnumerable<User>> GetFollowing(int userId);
+        Task<bool> CheckExistingEmail(string email);
     };
 }

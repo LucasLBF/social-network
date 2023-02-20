@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Data.Context;
+using SocialNetwork.Data.Repositories.Implementations;
+using SocialNetwork.Data.UnitOfWork.Implementations;
 
 namespace SocialNetwork.Test.Fixtures
 {
@@ -49,6 +51,14 @@ namespace SocialNetwork.Test.Fixtures
             });
 
 
+        }
+
+        public static UnitOfWork GetUnitOfWork(SocialNetworkContext context)
+        {
+            return new UnitOfWork(context,
+                new UserRepository(context),
+                new PersonalUserRepository(context),
+                new EnterpriseUserRepository(context));
         }
     }
 }

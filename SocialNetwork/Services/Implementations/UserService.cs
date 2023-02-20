@@ -1,31 +1,31 @@
 ﻿using SocialNetwork.API.Services.Abstractions;
 using SocialNetwork.Data.Entities;
-using SocialNetwork.Data.Repositories.Abstractions;
+using SocialNetwork.Data.UnitOfWork.Abstractions;
 
 namespace SocialNetwork.API.Services.Implementations
 {
     public class UserService : IUserService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUnitOfWork unitOfWork)
         {
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<User?> GetUser(int userId)
         {
-            return await _userRepository.GetByIdAsync(userId);
+            return await _unitOfWork.UserRepository.GetByIdAsync(userId);
         }
 
         public async Task<IEnumerable<User>> GetFollowers(int userId)
         {
-            return await _userRepository.GetFollowers(userId);
+            return await _unitOfWork.UserRepository.GetFollowers(userId);
         }
 
         public async Task<IEnumerable<User>> GetFollowing(int userId)
         {
-            return await _userRepository.GetFollowing(userId);
+            return await _unitOfWork.UserRepository.GetFollowing(userId);
         }
 
         public async Task<IEnumerable<User>> GetUsersByName(string? name)
@@ -37,14 +37,35 @@ namespace SocialNetwork.API.Services.Implementations
                 return users;
             }
 
-            users = await _userRepository.GetUsersByNameAsync(name);
+            users = await _unitOfWork.UserRepository.GetUsersByNameAsync(name);
 
             return users;
         }
 
+        public async Task AddUser(User user, PersonalUser personalUser)
+        {
+            await _unitOfWork.UserRepository.AddAsync(user);
+            await _unitOfWork.PersonalUserRepository.AddAsync(personalUser);
+            
+            await _unitOfWork.SaveChanges();
+        }
+
+        public async Task AddUser(User user, EnterpriseUser enterpriseUser)
+        {
+            await _unitOfWork.UserRepository.AddAsync(user);
+            await _unitOfWork.EnterpriseUserRepository.AddAsync(enterpriseUser);
+            
+            await _unitOfWork.SaveChanges();
+        }
+
         public async Task<bool> CheckIfExists(int id)
         {
-            return await _userRepository.CheckIfExists(id);
+            return await _unitOfWork.UserRepository.CheckIfExists(id);
+        }
+
+        public async Task<bool> CheckExistingEmail(string email)
+        {
+            return await _unitOfWork.UserRepository.CheckExistingEmail(email);
         }
     }
 }

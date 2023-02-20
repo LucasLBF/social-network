@@ -1,4 +1,6 @@
-﻿namespace SocialNetwork.API.Models
+﻿using Microsoft.Data.SqlClient.Server;
+
+namespace SocialNetwork.API.Models
 {
     public class PostUserModel
     {
@@ -6,6 +8,6 @@
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public string Description { get; set; } = null!;
+        public ProfileModel Profile { get; set; } = null!;
     }
 }
